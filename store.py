@@ -3,6 +3,7 @@ This module defines the Store class representing a store and its operations.
 """
 import products
 
+
 class Store:
     """
     Represents a store and its operations.
