@@ -7,7 +7,8 @@ def test_create_product():
 
 
 def test_creating_product_invalid_details():
-    assert Product(123, 120, 100)
+    with pytest.raises(ValueError):
+        Product("", -120, -100)
 
 
 def test_product_becomes_inactive():
