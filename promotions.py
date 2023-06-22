@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Promotions(ABC):
     """
     Abstract base class for promotions applied to products.
