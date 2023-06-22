@@ -1,16 +1,49 @@
 """
 This module defines the Store class representing a store and its operations.
+
+Class:
+    Store:
+        Represents a store and provides methods for managing products and placing orders.
+
+Methods:
+    __init__(self, product):
+        Initializes the Store object with a list of products.
+
+    add_product(self, product):
+        Adds a product to the store.
+
+    remove_product(self, product):
+        Removes a product from the store.
+
+    get_total_quantity(self):
+        Retrieves the total quantity of all products in the store.
+
+    get_all_products(self):
+        Retrieves a list of all active products in the store.
+
+    order(self, shopping_list):
+        Places an order for a list of products and calculates the total cost of the order.
+
+        Args:
+            shopping_list (list): A list of tuples containing a product and its desired quantity.
+
+        Returns:
+            float: The total cost of the order.
+
+        Raises:
+            ValueError: If an invalid order is encountered, such as a product being out of stock or insufficient quantity.
 """
 import products
 
+
 class Store:
     """
-    Represents a store and its operations.
+    Represents a store and provides methods for managing products and placing orders.
     """
 
     def __init__(self, product):
         """
-        Initialize the Store with a list of products.
+        Initializes the Store object with a list of products.
 
         Args:
             product (list): A list of products to add to the store.
@@ -19,7 +52,7 @@ class Store:
 
     def add_product(self, product):
         """
-        Add a product to the store.
+        Adds a product to the store.
 
         Args:
             product (Product): The product to add.
@@ -28,7 +61,7 @@ class Store:
 
     def remove_product(self, product):
         """
-        Remove a product from the store.
+        Removes a product from the store.
 
         Args:
             product (Product): The product to remove.
@@ -38,7 +71,7 @@ class Store:
 
     def get_total_quantity(self):
         """
-        Get the total quantity of all products in the store.
+        Retrieves the total quantity of all products in the store.
 
         Returns:
             int: The total quantity of products.
@@ -50,7 +83,7 @@ class Store:
 
     def get_all_products(self):
         """
-        Get a list of all active products in the store.
+        Retrieves a list of all active products in the store.
 
         Returns:
             list: A list of active products.
@@ -63,25 +96,32 @@ class Store:
 
     def order(self, shopping_list):
         """
-        Place an order for a list of products.
+        Places an order for a list of products and calculates the total cost of the order.
 
         Args:
-            shopping_list (list): A list of (product, quantity) tuples representing the order.
+            shopping_list (list): A list of tuples containing a product and its desired quantity.
 
         Returns:
             float: The total cost of the order.
+
+        Raises:
+            ValueError: If an invalid order is encountered, such as a product being out of stock or insufficient quantity.
         """
         total_cost = 0
         for product, quantity in shopping_list:
             if product in self.products and product.is_active() and product.get_quantity() >= quantity:
                 cost = product.buy(quantity)
                 total_cost += cost
+            elif isinstance(product, products.LimitedProduct):
+                if product.get_maximum() > quantity:
+                    raise ValueError(f"You can only get {product.get_maximum()} of this item")
+                else:
+                    cost = product.buy(quantity)
+                    total_cost += cost
+            elif isinstance(product, products.NonStockedProduct):
+                if quantity > product.get_quantity():
+                    cost = product.buy(quantity)
+                    total_cost += cost
             else:
                 raise ValueError("Invalid order. Product is out of stock or insufficient quantity.")
         return total_cost
-
-
-product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
-                products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                products.Product("Google Pixel 7", price=500, quantity=250),
-               ]

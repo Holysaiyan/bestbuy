@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class Promotion(ABC):
+class Promotions(ABC):
     """
-    Abstract class representing a promotion for a product.
+    Abstract base class for promotions applied to products.
     """
 
     def __init__(self, name):
@@ -17,124 +17,137 @@ class Promotion(ABC):
 
     def get_name(self):
         """
-        returns the name of the promotion
+        Returns the name of the promotion.
+
+        Returns:
+            str: The name of the promotion.
         """
         return self._name
 
-    def set_name(self, name):
+    def set_name(self, new_name):
         """
-        sets the name of the promotion
-        """
-        self._name = name
-
-    @abstractmethod
-    def apply_promotion(self, product, quantity):
-        """
-        Applies the promotion to a product and returns the discounted price.
+        Sets the name of the promotion.
 
         Args:
-            product (Product): The product instance.
+            new_name (str): The new name of the promotion.
+        """
+        self._name = new_name
+
+    @abstractmethod
+    def apply_promotion(self, product, quantity) -> float:
+        """
+        Applies the promotion to the product for the specified quantity.
+
+        Args:
+            product (Product): The product to apply the promotion to.
             quantity (int): The quantity of the product.
 
         Returns:
-            float: The discounted price after applying the promotion.
+            float: The total cost of the product after applying the promotion.
         """
-
         pass
 
 
-class PercentageDiscount(Promotion):
+class SecondHalfPrice(Promotions):
     """
-    Represents a promotion that applies a percentage discount to the product price.
+    Represents a promotion where every second item is priced at half the original price.
+
+    Inherits from the Promotions class.
+    """
+
+    def apply_promotion(self, product, quantity) -> float:
+        """
+        Applies the second half price promotion to the product for the specified quantity.
+
+        Args:
+            product (Product): The product to apply the promotion to.
+            quantity (int): The quantity of the product.
+
+        Returns:
+            float: The total cost of the product after applying the promotion.
+        """
+        if quantity < 2:
+            return product.get_price() * quantity
+        else:
+            full_price_items = quantity // 2
+            half_price_items = quantity - full_price_items
+            total_cost = (full_price_items * product.get_price()) + (half_price_items * (product.get_price() / 2))
+            return total_cost
+
+
+class ThirdOneFree(Promotions):
+    """
+    Represents a promotion where every third item is free.
+
+    Inherits from the Promotions class.
+    """
+
+    def apply_promotion(self, product, quantity) -> float:
+        """
+        Applies the third one free promotion to the product for the specified quantity.
+
+        Args:
+            product (Product): The product to apply the promotion to.
+            quantity (int): The quantity of the product.
+
+        Returns:
+            float: The total cost of the product after applying the promotion.
+        """
+        if quantity < 3:
+            return product.get_price() * quantity
+        else:
+            full_price_items = quantity // 3
+            free_items = full_price_items
+            total_cost = (full_price_items * 2 * product.get_price())
+            return total_cost
+
+
+class PercentDiscount(Promotions):
+    """
+    Represents a promotion where a percentage discount is applied to the product.
+
+    Inherits from the Promotions class.
     """
 
     def __init__(self, name, percent):
         """
-        Initializes a new PercentageDiscountPromotion instance.
+        Initializes a new PercentDiscount instance.
 
         Args:
             name (str): The name of the promotion.
-            discount_percentage (float): The percentage discount to apply (e.g., 20% off).
+            percent (float): The percentage discount.
         """
         super().__init__(name)
-        self.discount_percentage = percent
+        self._percent = percent
 
-    def apply_promotion(self, product, quantity):
+    def get_percent(self):
         """
-        Applies the percentage discount promotion to the product and returns the discounted price.
+        Returns the percentage discount of the promotion.
+
+        Returns:
+            float: The percentage discount.
+        """
+        return self._percent
+
+    def set_percent(self, new_percent):
+        """
+        Sets the percentage discount of the promotion.
 
         Args:
-            product (Product): The product instance.
+            new_percent (float): The new percentage discount.
+        """
+        self._percent = new_percent
+
+    def apply_promotion(self, product, quantity) -> float:
+        """
+        Applies the percent discount promotion to the product for the specified quantity.
+
+        Args:
+            product (Product): The product to apply the promotion to.
             quantity (int): The quantity of the product.
 
         Returns:
-            float: The discounted price after applying the percentage discount promotion.
+            float: The total cost of the product after applying the promotion.
         """
-        price = product.get_price()
-        discount = price * self.discount_percentage / 100
-        total_discount = discount * quantity
-        return price * quantity - total_discount
-
-
-class SecondItemHalfPricePromotion(Promotion):
-    """
-    Represents a promotion where the second item is sold at half price.
-    """
-
-    def __init__(self, name):
-        """
-        Initializes a new SecondItemHalfPricePromotion instance.
-
-        Args:
-            name (str): The name of the promotion.
-        """
-        super().__init__(name)
-
-    def apply_promotion(self, product, quantity):
-        """
-        Applies the second item half price promotion to the product and returns the discounted price.
-
-        Args:
-            product (Product): The product instance.
-            quantity (int): The quantity of the product.
-
-        Returns:
-            float: The discounted price after applying the second item half price promotion.
-        """
-        price = product.get_price()
-        discounted_quantity = quantity // 2
-        remaining_quantity = quantity % 2
-        return (discounted_quantity * price / 2) + (remaining_quantity * price)
-
-
-class Buy2Get1FreePromotion(Promotion):
-    """
-    Represents a promotion where buying 2 items gets 1 item for free.
-    """
-
-    def __init__(self, name):
-        """
-        Initializes a new Buy2Get1FreePromotion instance.
-
-        Args:
-            name (str): The name of the promotion.
-        """
-        super().__init__(name)
-
-    def apply_promotion(self, product, quantity):
-        """
-        Applies the buy 2, get 1 free promotion to the product and returns the discounted price.
-
-        Args:
-            product (Product): The product instance.
-            quantity (int): The quantity of the product.
-
-        Returns:
-            float: The discounted price after applying the buy 2 get 1 free promotion.
-        """
-        price = product.get_price()
-        discounted_quantity = quantity // 3
-        remaining_quantity = quantity % 3
-        return (discounted_quantity * 2 * price) + (remaining_quantity * price)
-
-
+        discounted_price = product.get_price() * (1 - self.get_percent() / 100)
+        return discounted_price * quantity
