@@ -1,3 +1,8 @@
+"""
+This module defines the promotions applied to products in a retail system.
+"""
+
+
 from abc import ABC, abstractmethod
 
 
@@ -68,11 +73,10 @@ class SecondHalfPrice(Promotions):
         """
         if quantity < 2:
             return product.get_price() * quantity
-        else:
-            full_price_items = quantity // 2
-            half_price_items = quantity - full_price_items
-            total_cost = (full_price_items * product.get_price()) + (half_price_items * (product.get_price() / 2))
-            return total_cost
+        full_price_items = quantity // 2
+        half_price_items = quantity - full_price_items
+        total_cost = (full_price_items * product.get_price()) + (half_price_items * (product.get_price() / 2))
+        return total_cost
 
 
 class ThirdOneFree(Promotions):
@@ -98,7 +102,7 @@ class ThirdOneFree(Promotions):
         else:
             full_price_items = quantity // 3
             free_items = full_price_items
-            total_cost = (full_price_items * 2 * product.get_price())
+            total_cost = full_price_items * 2 * product.get_price()
             return total_cost
 
 

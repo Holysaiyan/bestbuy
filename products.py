@@ -83,8 +83,7 @@ class Product:
         if new_price > 0:
             self._price = new_price
             return "Price has been updated."
-        else:
-            return "The value set is invalid. Please use a positive value."
+        return "The value set is invalid. Please use a positive value."
 
     def is_active(self):
         """
@@ -112,7 +111,8 @@ class Product:
         Returns the promotion applied to the product.
 
         Returns:
-            Promotions or None: The promotion applied to the product, or None if no promotion is applied.
+            Promotions or None: The promotion applied to the product,
+            or None if no promotion is applied.
         """
         return self._promotion
 
@@ -135,9 +135,10 @@ class Product:
         if self.get_promotion():
             promotion_name = self.get_promotion().get_name()
             promotion_info = f", Promotion: {promotion_name}"
-            return f"{self.get_name()}, Price: £{self.get_price()}, Quantity: {self.get_quantity()}{promotion_info}"
-        else:
-            return f"{self.get_name()}, Price: £{self.get_price()}, Quantity: {self.get_quantity()}"
+            return f"{self.get_name()}, Price: £{self.get_price()}, " \
+                   f"Quantity: {self.get_quantity()}{promotion_info}"
+        return f"{self.get_name()}, Price: £{self.get_price()}, " \
+               f"Quantity: {self.get_quantity()}"
 
     def buy(self, quantity):
         """
@@ -150,7 +151,8 @@ class Product:
             float: The total cost of the purchase.
 
         Raises:
-            ValueError: If the product is inactive, there is insufficient quantity available, or the quantity is less than 1.
+            ValueError: If the product is inactive,
+            there is insufficient quantity available, or the quantity is less than 1.
         """
         if not self.active:
             raise ValueError("Product is out of stock")
@@ -231,7 +233,8 @@ class NonStockedProduct(Product):
             ValueError: If the quantity is less than 1.
 
         Note:
-            Since the product is non-stocked, the purchase quantity is multiplied by the price to calculate the cost.
+            Since the product is non-stocked, the purchase quantity is
+            multiplied by the price to calculate the cost.
         """
         if quantity < 1:
             raise ValueError("Quantity must be a positive value")
@@ -255,7 +258,8 @@ class LimitedProduct(Product):
 
     def __init__(self, name, price, quantity, maximum):
         """
-        Initialize a limited product with the given name, price, quantity, and maximum purchase limit.
+        Initialize a limited product with the given name,
+        price, quantity, and maximum purchase limit.
 
         Args:
             name (str): The name of the product.
@@ -291,9 +295,12 @@ class LimitedProduct(Product):
         if self.get_promotion():
             promotion_name = self.get_promotion().get_name()
             promotion_info = f", Promotion: {promotion_name}"
-            return f"{self.get_name()}, Price: £{self.get_price()}, Quantity: {self.get_quantity()}, Maximum: {self.get_maximum()}{promotion_info}"
+            return f"{self.get_name()}, Price: £{self.get_price()}," \
+                   f" Quantity: {self.get_quantity()}, " \
+                   f"Maximum: {self.get_maximum()}{promotion_info}"
         else:
-            return f"{self.get_name()}, Price: £{self.get_price()}, Quantity: {self.get_quantity()}, Maximum: {self.get_maximum()}"
+            return f"{self.get_name()}, Price: £{self.get_price()}, " \
+                   f"Quantity: {self.get_quantity()}, Maximum: {self.get_maximum()}"
 
     def buy(self, quantity):
         """
@@ -306,7 +313,8 @@ class LimitedProduct(Product):
             float: The total cost of the purchase.
 
         Raises:
-            ValueError: If the product is inactive, the quantity exceeds the maximum limit, or the quantity is less than 1.
+            ValueError: If the product is inactive, the quantity exceeds
+            the maximum limit, or the quantity is less than 1.
         """
         if not self.active:
             raise ValueError("Product is out of stock")
